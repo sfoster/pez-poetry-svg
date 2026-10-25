@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pez Poetry: SVG Generator</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; color: #202b32; background: #f3f5f6; font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 1050px; margin: 36px auto; padding: 0 24px; }
+  footer { max-width: 1050px; margin: 36px auto; padding: 0 24px; }
+  h1 { margin-bottom: 4px; font-size: 28px; }
+  .hint { color: #52616b; font-size: 14px; }
+  section { padding: 22px; margin: 20px 0; background: white; border: 1px solid #d7dfe3; border-radius: 10px; }
+  label { display: block; margin-bottom: 6px; font-weight: 600; }
+  input, textarea, button { font: inherit; }
+  input:not([type=checkbox]), textarea { padding: 9px; border: 1px solid #aebcc4; border-radius: 5px; width: 100%; }
+  textarea { resize: vertical; min-height: 130px; }
+  button { padding: 9px 16px; cursor: pointer; border: 1px solid #246773; border-radius: 5px; background: #246773; color: white; }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; gap: 16px; align-items: end; flex-wrap: wrap; margin-bottom: 16px; }
+  .grow { flex: 1; min-width: 240px; }
+  .number { width: 150px; }
+  .check { font-weight: 400; margin: 0 0 8px; }
+  #status { min-height: 1.5em; overflow-wrap: anywhere; }
+  #status.error { color: #a22b25; }
+  .preview { overflow: auto; padding: 24px; background: #e9eef0; border-radius: 5px; min-height: 160px; }
+  #preview { display: block; background: white; max-width: none; box-shadow: 0 2px 8px #0002; }
+  summary { cursor: pointer; }
+  #source { min-height: 180px; margin-top: 12px; font: 12px/1.5 monospace; }
+  code { font-size: .9em; }
+</style>
+<main>
+  <h1>Pez Poetry: SVG Generator</h1>
+  <section>  
+    <label for="text">Poems are max 12 words, no more than 7 letters per word.</label>
+    <textarea id="text" spellcheck="false">A story then. It will be a short one its grown late.
+    </textarea>
+  </section>
+  <section>
+    <div class="row"><div class="grow"><strong>SVG preview</strong><div id="dimensions" class="hint">Load a font to render text.</div></div><button id="download" disabled>Download SVG</button></div>
+    <div class="preview"><svg id="preview" xmlns="http://www.w3.org/2000/svg" width="15.75mm" height="60mm" viewBox="0 0 15.75 60">
+      <rect id="outer" class="outline" x="0" y="0" width="15.55" height="60" fill="none" stroke="red" stroke-width="0.1"/>
+      <g transform="translate(0 0)" class="slot" id="slot0">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 5)" class="slot" id="slot1">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 10)" class="slot" id="slot2">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 15)" class="slot" id="slot3">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 20)" class="slot" id="slot4">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 25)" class="slot" id="slot5">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 30)" class="slot" id="slot6">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 35)" class="slot" id="slot7">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 40)" class="slot" id="slot8">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 45)" class="slot" id="slot9">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 50)" class="slot" id="slot10">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      <g transform="translate(0 55)" class="slot" id="slot11">
+        <rect class="outline" x="0" y="0" width="15.55" height="5" fill="none" stroke="green" stroke-width="0.1"/>
+      </g>
+      </svg></div>
+    <p class="hint">Preview uses the same paths as the download. Screen size depends on browser zoom; exported width and height are explicit. The white preview background is not exported.</p>
+    <details>
+      <summary>SVG source</summary>
+      <textarea id="source" readonly aria-label="Exported SVG source"></textarea>
+    </details>
+  </section>
+  <section>
+    <details>
+      <summary>Font Details</summary>
+      <div class="row">
+        <div class="grow"><label for="fontPath">TTF / OTF path or URL</label><input id="fontPath" spellcheck="false"></div>
+        <button id="loadPath" type="button">Load font</button>
+      </div>
+      <label for="fontFile">Or choose a local font file</label>
+      <input id="fontFile" type="file" accept=".ttf,.otf,.woff">
+      <p class="hint">File selection works when this page is opened directly from disk. Relative paths need an HTTP server; remote URLs must permit CORS. Use a static TTF or OTF to start.</p>
+      <p id="status" role="status" aria-live="polite">Choose a font file or load a path to begin.</p>
+      <div class="row">
+        <div class="number"><label for="fontSize">Font size (pt)</label><input id="fontSize" type="number" min="1" max="200" step="0.5"></div>
+        <div class="number"><label for="padding">Padding (mm)</label><input id="padding" type="number" min="0" max="50" step="0.25" value="0.5"></div>
+        <label class="check"><input id="kerning" type="checkbox" checked> Use kerning</label>
+      </div>
+    </details>
+  </section>
+</main>
+<footer>
+  <p>Literata is licensed under the SIL Open Font License, Version 1.1. This license is also available with a FAQ at: <a href="https://openfontlicense.org/">https://openfontlicense.org/</a>.</p>
+</footer>
+<!-- Pinned API: 1.3.4 uses toPathData(decimalPlaces); getPath already flips Y. -->
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
+<script>
+"use strict";
+
+const FONT_PATH = "./fonts/Literata-Regular.ttf";
+const FONT_SIZE_PT = 9.5;
+
+const $ = id => document.getElementById(id);
+const SVG_NS = "http://www.w3.org/2000/svg";
+let font = null;
+let fontLabel = "";
+let loadRevision = 0;
+let exportedSVG = "";
+$("fontPath").value = FONT_PATH;
+$("fontSize").value = FONT_SIZE_PT;
+
+function status(message, error = false) {
+  $("status").textContent = message;
+  $("status").classList.toggle("error", error);
+}
+
+function clearExport() {
+  exportedSVG = "";
+  $("download").disabled = true;
+  resetSVGTemplate($("preview"));
+  $("source").value = "";
+  $("dimensions").textContent = "No export available.";
+}
+
+async function loadFont(readBytes, label) {
+  const revision = ++loadRevision;
+  font = null;
+  clearExport();
+  status("Loading " + label + "…");
+  try {
+    if (!window.opentype) throw new Error("opentype.js could not load. Check your connection or use a local copy of the library.");
+    const bytes = await readBytes();
+    if (revision !== loadRevision) return;
+    const parsed = opentype.parse(bytes);
+    // Initialize kerning tables before rendering either kerning mode.
+    font = parsed;
+    fontLabel = label;
+    render();
+  } catch (error) {
+    if (revision !== loadRevision) return;
+    font = null;
+    clearExport();
+    status("Could not load font: " + error.message, true);
+  }
+}
+
+
+function renderWithFontPath() {
+  const path = $("fontPath").value.trim();
+  if (!path) { status("Enter a font path or select a local file.", true); return; }
+  loadFont(async () => {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error("HTTP " + response.status + ". Check the font path.");
+    return response.arrayBuffer();
+  }, path);
+}
+
+window.addEventListener("load", () => {
+  const path = $("fontPath").value?.trim();
+  if (path) {
+    renderWithFontPath();
+  }
+});
+
+$("loadPath").addEventListener("click", () => {
+  renderWithFontPath();
+});
+
+$("fontFile").addEventListener("change", () => {
+  const file = $("fontFile").files[0];
+  if (file) loadFont(() => file.arrayBuffer(), file.name);
+});
+
+function numberValue(id, min, max) {
+  const value = $(id).valueAsNumber;
+  if (!Number.isFinite(value) || value < min || value > max) {
+    throw new Error(id + " must be between " + min + " and " + max + ".");
+  }
+  return value;
+}
+
+function getTextLines() {
+  const maxLineLen = 7;
+  const text = $("text").value.replace(/\r\n?/g, "\n").trim();
+  if (!text) {
+    clearExport();
+    status("Enter some text to preview.");
+    return;
+  }
+  let lines = text.split("\n");
+  if (lines.length > 1) {
+    // text already has line endings, we'll use them as-is
+    console.log("text has newlines, using as-is");
+  } else {
+    lines = [];
+    let line = "";
+    let words = text.split(/\s+/).map(
+      word => word.length > maxLineLen ? word.slice(0, maxLineLen) : word
+    );
+    lines = [...words];
+  }
+  return [text, lines];
+}
+
+function resetSVGTemplate(svg) {
+  for (let elem of svg.querySelectorAll("path.word")) {
+    elem.remove();
+  }
+}
+
+function render() {
+  if (!font) return;
+  const svgPreview = $("preview");
+  try {
+    const sizePt = numberValue("fontSize", 1, 200);
+    const sizeMm = sizePt * 25.4 / 72;
+    const padding = numberValue("padding", 0, 50);
+    const [text, lines] = getTextLines()
+    const options = { kerning: $("kerning").checked };
+    const scale = sizeMm / font.unitsPerEm;
+    const ascent = font.ascender * scale;
+    const descent = -font.descender * scale;
+
+    // Include font line metrics, visible overhangs, and trailing whitespace.
+    // The maxX is the width of the rect slot elements and the outline
+    const outline = svgPreview.querySelector("#outer");
+    const slotReference = svgPreview.querySelector(".slot > .outline");
+    const width = outline.width.baseVal.value
+    const height = outline.height.baseVal.value
+
+    let minX = 0;
+    const maxX = slotReference.width.baseVal.value;
+    const paths = lines.map(line => {
+      const path = font.getPath(line, 0, 0, sizeMm, options);
+      if (path.commands.length) {
+        const box = path.getBoundingBox();
+        minX = Math.min(minX, box.x1); // maxX = Math.max(maxX, box.x2);
+      }
+      return path;
+    });
+    const svg = $("preview");
+    resetSVGTemplate(svg);
+
+    let slotIndex = 0;
+    console.log("padding:", padding);
+
+    // Flatten the offset into path coordinates for straightforward imports.
+    for (const path of paths) {
+      if (!path.commands.length) continue;
+      const slotElem = svg.querySelector(`#slot${slotIndex}`);
+      if (!slotElem) {
+        console.warn("No slot element for index:", slotIndex, svg);
+        continue;
+      }
+      const rect = slotElem.querySelector(".outline");
+      const box = path.getBoundingBox();
+      const pathWidth  = box.x2 - box.x1;
+      const leftPad = (width - pathWidth) / 2;
+      // Center the font's metric box so every line shares the same local baseline.
+      const offsetY = -padding + rect.y.baseVal.value + (rect.height.baseVal.value - ascent - descent) / 2 + ascent;
+      for (const command of path.commands) {
+        for (const key of ["x", "x1", "x2"]) if (key in command) {
+          command[key] += leftPad - minX;slotIndex
+        }
+        for (const key of ["y", "y1", "y2"]) if (key in command) command[key] += offsetY;
+      }
+      const element = document.createElementNS(SVG_NS, "path");
+      element.setAttribute("d", path.toPathData(4));
+      element.setAttribute("fill", "#000000");
+      element.setAttribute("stroke", "none");
+      element.setAttribute("class", "word");
+      slotElem.append(element);
+      slotIndex++;
+    }
+    const copy = svg.cloneNode(true);
+    copy.removeAttribute("id");
+    copy.removeAttribute("aria-label");
+    exportedSVG = '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(copy);
+    $("source").value = exportedSVG;
+    $("download").disabled = false;
+    $("dimensions").textContent = `${width.toFixed(2)} × ${height.toFixed(2)} mm · ${sizePt} pt · ${lines.length} line(s)`;
+    const missing = [...new Set([...text].filter(c => c !== "\n" && c !== "\r" && !font.hasChar(c)))];
+    status("Loaded " + fontLabel + (missing.length ? ". Missing glyphs: " + missing.join(" ") : ". Preview ready."), missing.length > 0);
+  } catch (error) {
+    clearExport();
+    status(error.message, true);
+  }
+}
+
+function getDownloadFilename() {
+  let text = $("text").value.trim();
+  let parts = text.split(/[^\w]/).filter(a => a.length)
+  return `${parts.join("-")}.svg`;
+}
+
+for (const id of ["text", "fontSize", "padding", "kerning"]) {
+  $(id).addEventListener("input", render);
+}
+$("download").addEventListener("click", () => {
+  if (!exportedSVG) return;
+  const url = URL.createObjectURL(new Blob([exportedSVG], { type: "image/svg+xml;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = getDownloadFilename();
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+if (!window.opentype) status("opentype.js could not load. Check your connection or use a local copy of the library.", true);
+</script>
+</html>
